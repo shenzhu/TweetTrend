@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Twitter Map</title>
+    <style>
+        html, body{
+            height: 100%;
+        }
+        #map {
+            height: 100%;
+        }
+    </style>
+
+    <!-- Bootstrap core CSS and JQuery-->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <style type="text/css">
+
+        #topNavbar {
+            margin-bottom: 0px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Static navbar -->
+<nav id="topNavbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">TweetMap</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">Home</a></li>
+                <li><a href="/search">Search</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div id="map"></div>
+
+<script>
+    // Create socket
+    var socket;
+    var interval;
+    var timeInterval = 5000;
+
+    function initMap() {
+
+        // Init google map
+        var columbia = {lat: 40.806, lng: -73.963};
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 3,
+            center: columbia
+        });
+
+        // An array to store all markers
+        var googleMarkers = [];
+
+        // Establish socket connection
+        //socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket = io.connect(null, {port: location.port, rememberTransport:false});
+
+
+        socket.on('connect', function(){
+            socket.emit('realTime', "CONNECTED");
+            console.log("Connected!");
+        });
+
+        socket.on('realTimeResponse', function(tweet) {
+
+            console.log("New Tweet");
+            // Parse JSON
+            var tweetJSON = JSON.parse(tweet);
+
+            var longitude = parseFloat((tweetJSON['longitude']));
+            var latitude = parseFloat((tweetJSON['latitude']));
+            var sentiment = tweetJSON['sentiment'];
+
+            var icon;
+            if (sentiment == 'positive') {
+                icon = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+            } else if (sentiment == 'negative') {
+                icon = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
+            } else {
+                icon = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+            }
+
+            var markerPosition = {lat: latitude, lng: longitude};
+
+            var marker = new google.maps.Marker({
+                position: markerPosition,
+                icon: icon,
+                map: map
+            });
+
+            // Add markers to the array
+            googleMarkers.push(marker);
+        });
+
+        socket.on('message', function(tweets){
+
+            // Parse JSON
+            var tweetsJSON = JSON.parse(tweets)
+
+            // Parse every tweet in tweetsJSON
+            for (var x in tweetsJSON) {
+                var longitude = parseFloat((tweetsJSON[x]['longitude']));
+                var latitude = parseFloat((tweetsJSON[x]['latitude']));
+                var sentiment = (tweetsJSON[x]['sentiment']);
+
+                var icon;
+                // Change color based on sentiment
+                if (sentiment == 'positive') {
+                    icon = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+                } else if (sentiment == 'negative') {
+                    icon = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
+                } else {
+                    icon = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+                }
+
+                var markerPosition = {lat: latitude, lng: longitude};
+
+                var marker = new google.maps.Marker({
+                    position: markerPosition,
+                    icon: icon,
+                    map: map
+                });
+
+                // Add markers to the array
+                googleMarkers.push(marker);
+            }
+        });
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7HpBJ6pCZGP7tjZd8nqUXqKjiZZ-zQ0M&callback=initMap">
+</script>
+<script src="../static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+</body>
+</html>
