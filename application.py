@@ -33,8 +33,8 @@ def hello_world():
 
             # Send this tweet to elastic search
             # postURL = 'http://localhost:9201/tweetmap/tweet'
-            postURL = 'http://search-tweetmap-hozfp5wv6wvf7ajfcenijhcmmu.us-west-2.es.amazonaws.com/tweetmap/tweet'
-            # r = requests.post(postURL, json = tweet)
+            postURL = 'elastic search endpoint'
+            r = requests.post(postURL, json = tweet)
 
             # Send this tweet to front-end
             if socketConnected:
@@ -55,7 +55,7 @@ def handle_realtime_event(message):
 
     # Fetch tweets in elastic search
     # queryURL = 'http://localhost:9201/tweetmap/_search?q=*:*&size=1000'
-    queryURL = 'http://search-tweetmap-hozfp5wv6wvf7ajfcenijhcmmu.us-west-2.es.amazonaws.com/tweetmap/_search?q=*:*&size=10000'
+    queryURL = 'elastic search endpoint'
     response = requests.get(queryURL)
     results = json.loads(response.text)
 
@@ -71,7 +71,7 @@ def handle_realtime_event(message):
 def handle_message(message):
     if message == 'Init':
         # Run local elastic search
-        queryURL = 'http://search-tweetmap-hozfp5wv6wvf7ajfcenijhcmmu.us-west-2.es.amazonaws.com/tweetmap/_search?q=*:*&size=10000'
+        queryURL = 'elastic search endpoint'
         # queryURL = 'http://localhost:9201/tweetmap/_search?q=*:*&size=1000'
         response = requests.get(queryURL)
         results = json.loads(response.text)
@@ -80,7 +80,7 @@ def handle_message(message):
     else:
 
         queryKeyWord = message.replace(' ', '%20')
-        queryURL = 'http://search-tweetmap-hozfp5wv6wvf7ajfcenijhcmmu.us-west-2.es.amazonaws.com/tweetmap/_search?q=' + queryKeyWord + '&size=10000'
+        queryURL = 'elastic search endpoint'
         # queryURL = 'http://localhost:9201/tweetmap/_search?q=' + queryKeyWord + '&size=1000'
         response = requests.get(queryURL)
         results = json.loads(response.text)

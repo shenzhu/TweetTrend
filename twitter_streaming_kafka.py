@@ -8,10 +8,10 @@ import json
 from kafka import KafkaProducer
 
 # Variables that contains the user credentials to access Twitter API
-access_token = "784618547188273152-9zZYAm8WAJwZ13y2QsDNa7sKAu93tmy"
-access_token_secret = "RJazjf9Ygs2Fk8HQrPeRIKx1nhrDQotVF0F5U5w24vD79"
-consumer_key = "ehR8L9AsTSOr4V73ydqheCYoY"
-consumer_secret = "ooxUglJY1P7xIJ4KZZOPMnGlv3FDn7StYcXelauawB6lveN4fB"
+access_token = ""
+access_token_secret = ""
+consumer_key = ""
+consumer_secret = ""
 
 
 # This is a basic listener that just prints received tweets to stdout
