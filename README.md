@@ -1,4 +1,4 @@
-COMS 6998 Cloud Computing Assignment 2
+TweetMap with Sentiment Analysis
 
 - Used Tweepy and AWS SQS to stream tweets in real-time and stored tweets in AWS Elasticsearch
 - Created a worker pool to fetch tweets in AWS SQS using python multithreding
